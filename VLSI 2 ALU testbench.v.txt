@@ -1,0 +1,69 @@
+`timescale 1ns / 1ps
+
+module alu_tb;
+
+    reg  [3:0] A, B, sel;
+    wire [7:0] result;
+    wire carry_out, zero_flag;
+
+    // Instantiate the ALU (Device Under Test)
+    alu uut (
+        .A(A),
+        .B(B),
+        .sel(sel),
+        .result(result),
+        .carry_out(carry_out),
+        .zero_flag(zero_flag)
+    );
+
+    initial begin
+        // Dump file for waveform viewing (GTKWave / Vivado)
+        $dumpfile("alu_tb.vcd");
+        $dumpvars(0, alu_tb);
+
+        $display("Time\tA\tB\tSel\tResult\tCarry\tZero");
+        $monitor("%0t\t%d\t%d\t%b\t%d\t%b\t%b", $time, A, B, sel, result, carry_out, zero_flag);
+
+        // Test ADD
+        A = 4'd5; B = 4'd3; sel = 4'b0000; #10;
+
+        // Test SUB
+        A = 4'd5; B = 4'd3; sel = 4'b0001; #10;
+
+        // Test AND
+        A = 4'b1100; B = 4'b1010; sel = 4'b0010; #10;
+
+        // Test OR
+        A = 4'b1100; B = 4'b1010; sel = 4'b0011; #10;
+
+        // Test XOR
+        A = 4'b1100; B = 4'b1010; sel = 4'b0100; #10;
+
+        // Test NOT
+        A = 4'b1010; B = 4'b0000; sel = 4'b0101; #10;
+
+        // Test SHL
+        A = 4'b0011; B = 4'b0000; sel = 4'b0110; #10;
+
+        // Test SHR
+        A = 4'b1000; B = 4'b0000; sel = 4'b0111; #10;
+
+        // Test MUL
+        A = 4'd3; B = 4'd4; sel = 4'b1000; #10;
+
+        // Test GT
+        A = 4'd7; B = 4'd2; sel = 4'b1001; #10;
+
+        // Test EQ
+        A = 4'd6; B = 4'd6; sel = 4'b1010; #10;
+
+        // Test LT
+        A = 4'd2; B = 4'd9; sel = 4'b1011; #10;
+
+        // Test Zero flag case
+        A = 4'd0; B = 4'd0; sel = 4'b0000; #10;
+
+        $finish;
+    end
+
+endmodule
